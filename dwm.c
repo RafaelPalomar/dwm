@@ -1249,7 +1249,20 @@ propertynotify(XEvent *e)
 void
 quit(const Arg *arg)
 {
-	running = 0;
+	FILE *fp;
+	char path[1035];
+
+	fp = popen(((char **)arg->v)[0], "r");
+	if (fp == NULL) {
+		return;
+	}
+
+	if(fgets(path, sizeof(path), fp) != NULL) {
+		if(!strcmp(path, "Yes\n"))
+			running = 0;
+	}
+
+	pclose(fp);
 }
 
 Monitor *
